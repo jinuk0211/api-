@@ -1,0 +1,33 @@
+version : 3
+services : 
+    api : # api service
+      build : .
+      depends_on : 
+        - postgres
+      ports : 
+        -  8000:8000 # port on which the api will be exposed
+        #port on localhost:port on container
+      environment : 
+        - DATABASE_HOSTNAME=postgres
+        - DATABASE_PORT=5432
+        - DATABASE_PASSWORD=password123
+        - DATABASE_NAME = fastapi
+        - DATABASE_USERNAME = postgres
+        - SECRET_KEY = " 123
+        - ALGORITHM = " HS256 "
+        - ACCESS_TOKEN_EXPIRE_MINUTES = 30
+    postgres: # postgres service
+      image: # image to be used
+      environment: # environment variables
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: password123
+        POSTGRES_DB: fastapi
+
+      volumes: # volumes to be mounted
+        - postgres_data:/var/lib/postgresql/data
+
+volumes: # volumes to be created
+  postgres_db # volume for postgres data
+ 
+ 
+    Enter fullscreen mode
