@@ -1,1 +1,52 @@
+name : Build and Deploy code
 
+on:  [push, pull_request]
+
+jobs:
+  job1:
+    env:
+      DATABASE_HOST: 'localhost'
+      DATABASE_PORT: 5432
+      DATABASE_PASSWORD: 'password'
+      DATABASE_NAME: fastapi
+      DATABASE_USERNAME: postgres
+      SECRET_KEY: ''
+      ALGORITHM: 'HS256'
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+    runs-on: ubuntu-latest
+    steps:
+      - name: pulling git repo
+        uses: actions/checkout@v2
+      - name: Install python version 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: update pip
+        run: python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name : run pytest
+        run: |
+          pip install pytest
+          pytest   
+
+
+  deploy: # 위의 job1이 성공하면 실행
+    runs-on : ubuntu-latest # 실행 환경
+    needs: [build] 
+    environmnet:
+      name: production
+
+    steps:
+      - name: deploying stuff
+      # run: echo "deploying stuff" # 배포 코드 작성
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+
+          1
+# AkhileshNS/heroku-deploy@v3.12.12
+# AkhileshNS/heroku-deploy는 GitHub Actions에서 사용하는 GitHub Action입니다.
+# 이 Action을 사용하면 코드를 GitHub에 Push할 때 자동으로 Heroku에 배포할 수 있습니다
